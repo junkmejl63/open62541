@@ -1,0 +1,6 @@
+cd ../../
+mkdir build && cd build
+cmake -DUA_BUILD_EXAMPLES=ON -DUA_ENABLE_PUBSUB=ON -DUA_ENABLE_ENCRYPTION=MBEDTLS
+# -DUA_ENABLE_ENCRYPTION_TPM2=ON ..
+make -j$(nproc)
+
