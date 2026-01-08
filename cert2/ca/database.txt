@@ -1,1 +1,2 @@
-V	270108211312Z		1000	unknown	/C=DE/O=open62541/CN=open62541Server@localhost
+V	270108223858Z		1000	unknown	/C=DE/O=open62541/CN=open62541Client@localhost
+V	270108223858Z		1001	unknown	/C=DE/O=open62541/CN=open62541Server@localhost
