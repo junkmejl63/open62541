@@ -1,0 +1,130 @@
+#### form tools/certs dir #### 
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            42:a7:a2:86:36:99:af:cc:7b:55:a1:9a:97:ef:3c:97:b5:6a:8b:b7
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = DE, L = Here, O = open62541, CN = open62541Server@localhost
+        Validity
+            Not Before: Jan  7 20:56:36 2026 GMT
+            Not After : Jan  7 20:56:36 2027 GMT
+        Subject: C = DE, L = Here, O = open62541, CN = open62541Server@localhost
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:aa:1d:2e:b7:ea:28:26:48:54:7b:31:0a:59:dc:
+                    d4:39:fe:17:80:c3:57:63:29:52:4b:91:44:86:8f:
+                    63:ea:7f:a8:cb:c3:a9:ea:a0:45:d3:8f:80:e6:d1:
+                    1f:6d:fe:fe:e5:8d:04:61:c5:5e:59:b8:ee:a4:08:
+                    1f:4b:ca:68:cf:56:3a:38:c5:54:1d:70:8d:26:6d:
+                    00:8f:49:bf:ce:51:f0:8b:0b:e8:6b:18:69:20:50:
+                    e4:34:ed:87:f5:93:cc:08:d2:70:35:68:c4:f3:e7:
+                    cd:4b:7f:fd:5b:14:77:dd:fd:75:2b:27:77:0e:7e:
+                    0a:d9:7f:d6:21:e4:3a:a1:bd:49:ba:82:96:b9:8a:
+                    92:54:bf:1b:4a:0c:90:31:d9:3e:34:34:62:43:e3:
+                    6f:cc:30:b4:73:1a:f5:68:77:30:87:3d:1d:f0:98:
+                    fc:7e:ab:3e:60:61:93:b9:a4:a1:a7:58:5c:96:36:
+                    56:16:d8:05:6f:63:f0:cc:16:8d:ed:02:22:b3:6b:
+                    ee:a1:99:cd:69:94:2f:e3:23:7e:80:84:6c:c6:76:
+                    bd:31:a8:64:1d:cf:25:4e:80:70:54:54:57:ab:6c:
+                    b8:b6:ef:3f:41:b0:a8:0d:b2:0a:a1:78:65:86:db:
+                    6a:00:4f:20:7d:79:e7:b5:1d:a5:22:fd:5a:c8:24:
+                    ce:09
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                5A:91:A1:BD:C5:69:CA:0D:B1:2E:78:4A:B4:87:D8:17:C7:F7:EF:19
+            X509v3 Authority Key Identifier: 
+                5A:91:A1:BD:C5:69:CA:0D:B1:2E:78:4A:B4:87:D8:17:C7:F7:EF:19
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Key Usage: 
+                Digital Signature, Non Repudiation, Key Encipherment, Data Encipherment, Certificate Sign
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Subject Alternative Name: 
+                DNS:pege, DNS:pege, IP Address:10.0.2.15, IP Address:172.17.0.1, URI:urn:open62541.unconfigured.application
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        6f:99:cb:2e:54:b9:a7:54:83:82:af:85:e2:19:17:11:21:4e:
+        82:ab:57:3b:f9:27:bc:73:de:e9:6c:23:5f:1f:cf:ff:71:b2:
+        19:24:28:c0:94:32:35:e1:13:c4:09:0d:fb:1c:39:d4:24:06:
+        85:80:82:1c:8a:6f:54:d6:7d:81:aa:cb:99:27:fe:ad:00:41:
+        e7:45:d4:8f:cc:90:92:ca:2b:a7:e2:2b:70:fd:83:19:4b:b8:
+        a4:0a:40:ac:e1:43:51:cb:34:62:5b:ed:9c:18:79:86:fd:66:
+        51:67:97:19:cd:b6:29:cd:0a:ab:ea:f0:2a:1b:77:19:c9:b8:
+        00:db:b3:df:e0:ee:33:7f:02:fd:64:10:4d:9c:3d:0d:95:26:
+        9c:74:3f:03:51:54:c9:b6:08:3b:bd:69:29:78:ac:85:38:44:
+        bd:b6:a3:6c:dd:60:e5:f1:12:fc:4e:25:07:89:03:35:81:89:
+        61:09:2e:27:af:30:38:d2:89:09:9b:a7:8e:be:aa:f5:19:97:
+        d1:d8:4e:a7:e4:5d:cc:16:d7:53:36:41:48:9e:b3:a1:a8:f3:
+        32:85:56:5c:36:f5:f9:ce:b4:ce:10:93:55:83:e0:22:82:2a:
+        4c:ad:48:0c:1b:93:46:9c:7b:84:c4:60:bc:88:c9:1f:02:c0:
+        79:1a:76:40
+#### CLIENT #### 
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            5c:8d:90:5d:d9:af:19:54:32:92:50:37:70:d5:b6:18:e2:62:a7:16
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = DE, L = Here, O = open62541, CN = open62541Server@localhost
+        Validity
+            Not Before: Jan  7 20:56:43 2026 GMT
+            Not After : Jan  7 20:56:43 2027 GMT
+        Subject: C = DE, L = Here, O = open62541, CN = open62541Server@localhost
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:b3:cf:2a:4a:5f:d2:06:32:14:4a:7e:29:3c:3d:
+                    99:75:88:0b:45:6f:62:ab:53:23:82:46:30:b1:e1:
+                    af:c5:de:08:89:65:03:cb:60:35:3c:6c:12:77:ff:
+                    48:64:b9:7f:62:06:36:94:52:5e:5c:2a:c5:cb:5b:
+                    36:f3:a2:05:c5:6c:aa:23:74:6d:98:55:2c:01:7d:
+                    6c:bb:1f:d3:dc:40:4c:18:29:8b:8a:0f:75:9b:70:
+                    52:c2:41:f9:8d:7b:db:0d:cd:ad:55:24:6c:55:02:
+                    9c:14:6c:a1:d6:4a:92:09:6f:05:9f:dd:ea:e8:5d:
+                    94:db:15:b5:9b:fb:10:33:1d:03:3a:2d:97:8c:41:
+                    e7:2d:0d:86:51:c7:5c:18:bf:73:da:bb:49:c4:a6:
+                    a6:1a:25:59:48:da:22:24:18:22:95:51:4f:f1:86:
+                    7e:26:b4:e0:ee:b4:8e:35:c8:b8:c4:ca:07:a3:a7:
+                    75:3b:28:51:d5:6b:e0:1d:2e:35:36:03:93:15:ce:
+                    da:91:1b:aa:89:db:8e:84:eb:83:6f:ef:c6:1f:f2:
+                    2c:56:15:b1:4d:b3:b0:25:0e:a2:3e:60:55:4f:4d:
+                    dc:11:e2:37:d9:40:b8:c7:da:18:36:b7:1a:0d:17:
+                    cf:79:01:71:60:48:fa:59:4a:5a:89:7e:84:a4:26:
+                    ac:cf
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                59:BE:5F:02:BA:3E:B6:40:82:34:B4:13:57:8E:D7:F8:07:E0:14:16
+            X509v3 Authority Key Identifier: 
+                59:BE:5F:02:BA:3E:B6:40:82:34:B4:13:57:8E:D7:F8:07:E0:14:16
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            X509v3 Key Usage: 
+                Digital Signature, Non Repudiation, Key Encipherment, Data Encipherment, Certificate Sign
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication, TLS Web Client Authentication
+            X509v3 Subject Alternative Name: 
+                DNS:pege, DNS:pege, IP Address:10.0.2.15, IP Address:172.17.0.1, URI:urn:open62541.unconfigured.application
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        03:65:4f:4e:8b:85:ba:7a:53:76:c4:f2:f6:6c:86:e7:34:96:
+        a6:07:6d:a6:b5:83:12:84:d4:6c:a8:29:9e:4b:d4:45:02:f4:
+        37:80:46:8b:e5:c1:b6:f3:75:fb:18:37:54:11:84:ef:08:c4:
+        05:79:25:e4:35:1d:fb:6b:cc:be:c4:06:1f:34:1f:29:48:9c:
+        52:50:80:0f:6d:fe:9b:99:fa:b8:d8:b2:00:4d:42:d5:42:97:
+        85:03:af:07:b6:c0:59:ca:41:a0:ad:88:0b:26:43:b1:02:7d:
+        a9:d5:dc:71:07:48:10:1f:ac:20:cc:d5:91:09:01:23:82:6c:
+        15:0b:21:2f:cb:ac:ee:db:19:2e:2d:b8:12:85:dd:53:95:78:
+        2d:01:84:dd:46:bf:41:5a:dd:ae:16:61:73:b0:af:01:cd:4e:
+        e0:a9:85:0a:a5:15:0a:0d:ad:1c:62:56:82:65:4e:41:9f:15:
+        a2:ee:e0:58:3f:ec:fe:24:80:58:a1:f1:85:18:8e:34:0d:d0:
+        83:05:48:14:5c:45:5f:a7:03:58:25:b3:27:5f:90:0c:be:b4:
+        37:7a:20:c9:5c:ae:64:28:58:a3:83:a4:ea:a7:bd:05:3e:b4:
+        9b:db:e2:ae:c3:b5:37:e0:54:51:ec:2b:de:42:2c:1a:e1:de:
+        25:25:51:13

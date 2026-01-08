@@ -211,6 +211,7 @@ Basic128Rsa15_New_Context(const UA_SecurityPolicy *securityPolicy,
     if(context->remoteCertificateX509 == NULL) {
         UA_ByteString_clear(&context->remoteCertificate);
         UA_free(context);
+         UA_LOG_WARNING(securityPolicy->logger, UA_LOGCATEGORY_SECURITYPOLICY,"PEGE: File: %s, Line: %d\n", __FILE__, __LINE__);
         return UA_STATUSCODE_BADCERTIFICATECHAININCOMPLETE;
     }
 

@@ -1,22 +1,35 @@
 # Open65421 - Learning!
 https://github.com/junkmejl63/open62541.git
+https://www.open62541.org/doc/open62541-master.pdf
 cmake-gui to make examples
 
-**python/env**
+# Notes on the open65421
+- Om 
+
+# Setting it up *python/env*
+```
 python -m venv venv
 source venv/bin/activate
 pip install netifaces
 pip install pycryptodome
+```
 
-# Objectives
+# 1. Objectives
 - Förstå kommunikationsmodellen
-- Förstå certifikat, vad som krävs inuti för funktion
+- Förstå certifikat, vad som krävs inuti cert för att fungera
 - Access nivåer/levels
 - Authentication vs. x.509 + mixs certs
-- Certificates, keys and it's usage...
+- Certificates, keys and it's usage, parameters
 - What is mandatory
 - Should we use pkcs#11?
 - Trustlist, or trust-dir?
+Q: Vilken security poilicy är tänkt att avnändas?
+
+## 1.2 Content in cert
+Example: If a client connects to secure.myservice.com:65421, the certificate should have CN=secure.myservice.com.
+
+Verkar kräva IP-addr, samt vissa andra parameter
+- It seems that 
 
 
 # Generate Certificates
@@ -139,27 +152,37 @@ cd ../../
 mkdir build && cd build
 cmake -DUA_BUILD_EXAMPLES=ON -DUA_ENABLE_PUBSUB=ON -DUA_ENABLE_ENCRYPTION=OPENSSL ..
 # -DUA_ENABLE_ENCRYPTION_TPM2=ON ..
+cd ..?
 make -j$(nproc)
 
 cmake -DUA_BUILD_EXAMPLES=ON -DUA_ENABLE_ENCRYPTION=OPENSSL ..
+make -j$(nproc)
 
 
-**buld test_certs examples**
-bin
-In server,
+## Build test_certs examples
+in bin/examples (for simplicity
+
+For server and client
+```
 python3 ../../tools/certs/create_self-signed.py -u urn:open62541.unconfigured.application -c server
 
-In client,
 python3 ../../tools/certs/create_self-signed.py -u urn:open62541.unconfigured.application -c client
-**execute examples**
 
+#Also copy to cert store / App/User
 ```
-Also test wihtg internediate; intermediate.der
-./client_encryption opc.tcp://pege:4840 client_cert.der client_key.der server_cert.der --serverCert server_cert.der
 
+# Use the encryption 
+```
+# Also test with internediate; intermediate.der
+./client_encryption opc.tcp://pege:4840 client_cert.der client_key.der server_cert.der --serverCert server_cert.der
+#
 ./client_encryption opc.tcp://pege:4840 client_cert.der client_key.der --serverCert server_cert.der
 #<trustlist1> 
 
+# It seems that trustedcrl must be pem?
+./server_encryption server_cert^Cer client_cert.pem --onlySecure
+
+#  certificate [1], privateKey [2] trustlist --onlySecure --allowDiscovery
 ./server_encryption server_cert.der server_key.der --onlySecure
 
 ./server_encryption server_cert.der server_key.der client_cert.der --onlySecure
@@ -169,10 +192,27 @@ Also test wihtg internediate; intermediate.der
 server_encryption_filestore server_cert.der server_key.der ./cert_store
 
 mkdir ./cert_store/UserTokenCerts/trusted/certs/
+
+NONE
+rm ./cert_store/UserTokenCerts/trusted/certs/client_cert.der
+rm ./cert_store/ApplCerts/trusted/certs/client_cert.der
+
+BOTH
 cp client_cert.der ./cert_store/UserTokenCerts/trusted/certs/
+cp client_cert.der ./cert_store/ApplCerts/trusted/certs/
+-info/client	Client Status: ChannelState: Open, SessionState: Activated, ConnectStatus: Good
 
+
+ONLY APP
+rm ./cert_store/UserTokenCerts/trusted/certs/client_cert.der
+cp client_cert.der ./cert_store/ApplCerts/trusted/certs/
+- error/client	Session cannot be activated with StatusCode BadIdentityTokenRejected.
+
+ONLY USER
+cp client_cert.der ./cert_store/UserTokenCerts/trusted/certs/
+rm ./cert_store/ApplCerts/trusted/certs/client_cert.der
+error/channel	TCP 6	| SC 0	| Received an ERR response with StatusCode BadSecurityChecksFailed 
 ```
-
 
 
 
@@ -182,3 +222,4 @@ cp client_cert.der ./cert_store/UserTokenCerts/trusted/certs/
 //      certificate: "/path/to/certificate",
 //      privateKey: "/path/to/privateKey"
 //    }
+

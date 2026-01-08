@@ -15,7 +15,6 @@
  *    Copyright 2019 (c) Kalycito Infotech Private Limited
  *    Copyright 2023 (c) Hilscher Gesellschaft für Systemautomation mbH (Author: Phuong Nguyen)
  */
-
 #include <open62541/types.h>
 #include <open62541/transport_generated.h>
 
@@ -863,8 +862,9 @@ serverNetworkCallbackLocked(UA_ConnectionManager *cm, uintptr_t connectionId,
     retval |= UA_SecureChannel_persistBuffer(channel);
 
     if(retval != UA_STATUSCODE_GOOD) {
+        //UA_LOG_WARNING_CHANNEL(bpm->logging, channel,"PEGE: File: %s, Line: %d\n", __FILE__, __LINE__);
         UA_LOG_WARNING_CHANNEL(bpm->logging, channel,
-                               "Processing the message failed with error %s",
+                               "PEGE: XXProcessing the message failed with error %s",
                                UA_StatusCode_name(retval));
 
         /* Send an ERR message and close the connection */
@@ -1337,8 +1337,9 @@ serverReverseConnectCallbackLocked(UA_ConnectionManager *cm, uintptr_t connectio
     retval |= UA_SecureChannel_persistBuffer(context->channel);
 
     if(retval != UA_STATUSCODE_GOOD) {
+        //UA_LOG_WARNING_CHANNEL(bpm->logging, context->channel,"PEGE: File: %s, Line: %d\n", __FILE__, __LINE__);
         UA_LOG_WARNING_CHANNEL(bpm->logging, context->channel,
-                               "Processing the message failed with error %s",
+                               "PEGE:Processing the message failed with error %s",
                                UA_StatusCode_name(retval));
 
         /* Processing the buffer failed within the SecureChannel.

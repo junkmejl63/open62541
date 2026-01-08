@@ -1,0 +1,53 @@
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+dir = ./ca/intermediate
+certificate = $dir/certs/ca.crt
+private_key = $dir/private/ca.key
+new_certs_dir = $dir/newcerts
+database = $dir/myindex
+serial = $dir/serial
+crlnumber = $dir/crlnumber
+default_days = 3650
+default_md = sha256
+private_key_bits = 2048
+email_in_dn = no
+preserve = no
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hostname = ${ENV::HOSTNAME}
+ipaddress1 = ${ENV::IPADDRESS1}
+ipaddress2 = ${ENV::IPADDRESS2}
+uri1 = ${ENV::URI1}
+
+[ v3_req ]
+
+# Extensions to add to a certificate request
+
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = ${hostname}
+DNS.2 = ${hostname}
+IP.1 = ${ipaddress1}
+IP.2 = ${ipaddress2}
+URI.1 = ${uri1}
+

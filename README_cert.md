@@ -1,3 +1,36 @@
+# CERT and code stuff
+cert_store/
+├── ApplCerts
+│   ├── issuer
+│   │   ├── certs
+│   │   └── crl
+│   ├── own
+│   │   ├── certs
+│   │   └── private
+│   ├── rejected
+│   │   └── certs
+│   │       └── open62541Server@localhost[D4828682F13338D3C11A584EA3A6D8765F49E0AA]
+│   └── trusted
+│       ├── certs
+│       │   └── client_cert.der
+│       └── crl
+└── UserTokenCerts
+    ├── issuer
+    │   ├── certs
+    │   └── crl
+    ├── own
+    │   ├── certs
+    │   └── private
+    ├── rejected
+    │   └── certs
+    │       └── open62541Server@localhost[9F759E9CD63F148A45B9FD2E80E8C59CF0628799]
+    └── trusted
+        ├── certs
+        │   └── client_cert.der
+        └── crl
+
+
+
 # Test cert:
 
 
@@ -67,4 +100,273 @@ Certificate:
         cb:5f:ad:db:c7:80:13:f4:d5:c1:5d:77:93:88:75:e4:c0:dd:
         7e:a5:eb:79
 ```
+
+
+# Security policieis / 
+**crypto-suites**
+- BASIC256SHA1
+- ECCNISTP256
+- AES128SHA256RSAOAEP
+- AES256SHA256RSAPSS
+- BASIC128RSA15 (Derived:128bit, RSA:1024-2048, Nonce: 16B)
+- BASIC128RSA15_RSA (SHA1, RSA=?)
+- BASIC256SHA256_RSA (2048-4096)
+
+
+```e
+#define UA_SECURITYPOLICY_BASIC128RSA15_RSAPADDING_LEN 11
+#define UA_SECURITYPOLICY_BASIC128RSA15_SYM_KEY_LENGTH 16
+#define UA_BASIC128RSA15_SYM_SIGNING_KEY_LENGTH 16
+#define UA_SECURITYPOLICY_BASIC128RSA15_SYM_ENCRYPTION_BLOCK_SIZE 16
+#define UA_SECURITYPOLICY_BASIC128RSA15_SYM_PLAIN_TEXT_BLOCK_SIZE 16
+#define UA_SECURITYPOLICY_BASIC128RSA15_MINASYMKEYLENGTH 128
+define UA_SECURITYPOLICY_BASIC128RSA15_MAXASYMKEYLENGTH 512
+```
+Note: This is same for all policies..
+
+- PKCS#1.5? (RSA15?)
+
+ size_t keylen = mbedtls_rsa_get_len(rsaContext); // Returns BYTES...
+
+ if(rsaContext->len < UA_SECURITYPOLICY_BASIC128RSA15_MINASYMKEYLENGTH ||
+       rsaContext->len > UA_SECURITYPOLICY_BASIC128RSA15_MAXASYMKEYLENGTH)
+        return UA_STATUSCODE_BADCERTIFICATEUSENOTALLOWED;
+#else
+    size_t keylen = mbedtls_rsa_get_len(mbedtls_pk_rsa(cc->remoteCertificate.pk));
+    if(keylen < UA_SECURITYPOLICY_BASIC128RSA15_MINASYMKEYLENGTH ||
+       keylen > UA_SECURITYPOLICY_BASIC128RSA15_MAXASYMKEYLENGTH)
+        return UA_STATUSCODE_BADCERTIFICATEUSENOTALLOWED;
+
+
+#define UA_SECURITYPOLICY_BASIC128RSA15_RSAPADDING_LEN 11
+#define UA_SECURITYPOLICY_BASIC128RSA15_SYM_KEY_LENGTH 16
+#define UA_BASIC128RSA15_SYM_SIGNING_KEY_LENGTH 16
+#define UA_SECURITYPOLICY_BASIC128RSA15_SYM_ENCRYPTION_BLOCK_SIZE 16
+#define UA_SECURITYPOLICY_BASIC128RSA15_SYM_PLAIN_TEXT_BLOCK_SIZE 16
+#define UA_SECURITYPOLICY_BASIC128RSA15_MINASYMKEYLENGTH 128
+#define UA_SECURITYPOLICY_BASIC128RSA15_MAXASYMKEYLENGTH 512        
+
+
+UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES <= onlysecure
+plugins/crypto/openssl/securitypolicy_basic256sha256
+
+# Proto9col
+XLDSGI=
+https://profiles.opcfoundation.org/profile/1532
+
+
+# OPC-UA in a nutshell
+- Have permissions
+-  admin,settings,
+- access levels, 
+- password managemetn,...
+
+/* Different sets of certificates are trusted for SecureChannel / Session */
+UA_CertificateGroup secureChannelPKI;
+UA_CertificateGroup sessionPKI;
+
+- #ifdef UA_ENABLE_ENCRYPTION
+
+/* Connect to the server and create+activate a Session with the given username
+* and password. This first set the UserIdentityToken in the client config and
+* then calls the regular connect method. */
+UA_StatusCode UA_THREADSAFE
+UA_Client_connectUsername(UA_Client *client, const char *endpointUrl,
+const char *username, const char *password);
+/* Connect to the server with a SecureChannel, but without creating a Session */
+UA_StatusCode UA_THREADSAFE
+UA_Client_connectSecureChannel(UA_Client *client, const char *endpointUrl);
+/
+
+
+# Certificate management / validation 
+3.5 CertificateGroup Plugin API
+This plugin verifies that the origin of the certificate is trusted. It does not assign any access rights/roles
+to the holder of the certificate.
+Usually, implementations of the CertificateGroup plugin provide an initialization method that takes
+a trust-list and a revocation-list as input. 
+
+
+4.8.23 TrustListMasks
+typedef enum {
+UA_TRUSTLISTMASKS_NONE = 0,
+UA_TRUSTLISTMASKS_TRUSTEDCERTIFICATES = 1,
+UA_TRUSTLISTMASKS_TRUSTEDCRLS = 2,
+UA_TRUSTLISTMASKS_ISSUERCERTIFICATES = 4,
+UA_TRUSTLISTMASKS_ISSUERCRLS = 8,
+UA_TRUSTLISTMASKS_ALL = 15
+} UA_TrustListMasks;
+
+
+# Certificate Validation activities in the stack
+* The description must be internally consistent. The ApplicationUri set in
+* the ApplicationDescription must match the URI set in the server
+* certificate.
+* The applicationType is not just descriptive, it changes the actual
+* functionality of the server. The RegisterServer service is available only
+* if the server is a DiscoveryServer and the applicationType is set to the
+* appropriate value.*/
+
+
+UA_Server_updateCertificate(UA_Server *server,
+const UA_NodeId certificateGroupId,
+const UA_NodeId certificateTypeId,
+const UA_ByteString certificate,
+const UA_ByteString *privateKey);
+* If certificateGroupId is null the DefaultApplicationGroup is used.
+* @param certificateGroupId The NodeId of the certificate group where
+* certificates will be added
+
+/* The description must be internally consistent.
+* - The ApplicationUri set in the ApplicationDescription must match the
+* URI set in the certificate */
+UA_ApplicationDescription clientDescription;
+
+/* Certificate Verification Plugin */
+UA_CertificateGroup certificateVerification;
+
+/* The certificate does not meet the requirements of the security policy. */
+#define UA_STATUSCODE_BADCERTIFICATEPOLICYCHECKFAILED 0x81140000
+
+/* The certificate has expired or is not yet valid. */
+#define UA_STATUSCODE_BADCERTIFICATETIMEINVALID 0x80140000
+Q: Is it possible to get time before secure channel?
+
+
+/* An issuer certificate has expired or is not yet valid. */
+#define UA_STATUSCODE_BADCERTIFICATEISSUERTIMEINVALID 0x80150000
+/* The HostName used to connect to a server does not match a HostName in the␣
+˓→certificate. */
+#define UA_STATUSCODE_BADCERTIFICATEHOSTNAMEINVALID 0x80160000
+
+/* The URI specified in the ApplicationDescription does not match the URI in the␣
+˓→certificate. */
+#define UA_STATUSCODE_BADCERTIFICATEURIINVALID 0x80170000
+
+/* The certificate may not be used for the requested operation. */
+#define UA_STATUSCODE_BADCERTIFICATEUSENOTALLOWED 0x80180000
+
+/* The issuer certificate may not be used for the requested operation. */
+#define UA_STATUSCODE_BADCERTIFICATEISSUERUSENOTALLOWED 0x80190000
+
+/* The certificate is not trusted. */
+#define UA_STATUSCODE_BADCERTIFICATEUNTRUSTED 0x801A0000
+/* It was not possible to determine if the certificate has been revoked. */
+#define UA_STATUSCODE_BADCERTIFICATEREVOCATIONUNKNOWN 0x801B0000
+/* It was not possible to determine if the issuer certificate has been revoked. */
+#define UA_STATUSCODE_BADCERTIFICATEISSUERREVOCATIONUNKNOWN 0x801C0000
+/* The certificate has been revoked. */
+#define UA_STATUSCODE_BADCERTIFICATEREVOKED 0x801D0000
+/* The issuer certificate has been revoked. */
+#define UA_STATUSCODE_BADCERTIFICATEISSUERREVOKED 0x801E0000
+/* The certificate chain is incomplete. */
+#define UA_STATUSCODE_BADCERTIFICATECHAININCOMPLETE 0x810D0000
+/* User does not have permission to perform the requested operation. */
+#define UA_STATUSCODE_BADUSERACCESSDENIED 0x801F0000
+/* The user identity token is not valid. */
+#define UA_STATUSCODE_BADIDENTITYTOKENINVALID 0x80200000
+/* The user identity token is valid but the server has rejected it. */
+#define UA_STATUSCODE_BADIDENTITYTOKENREJECTED 0x80210000
+
+/* The signature generated with the client certificate is missing or invalid. */
+#define UA_STATUSCODE_BADAPPLICATIONSIGNATUREINVALID 0x80580000
+
+/* The client did not provide at least one software certificate that is valid and␣
+˓→meets the profile requirements for the server. */
+#define UA_STATUSCODE_BADNOVALIDCERTIFICATES 0x80590000
+
+
+/* Verify that the certificate has the applicationURI in the subject name. */
+UA_StatusCode
+UA_CertificateUtils_verifyApplicationURI(UA_RuleHandling ruleHandling,
+const UA_ByteString *certificate,
+const UA_String *app
+
+struct UA_CertificateGroup {
+
+## nodeid !!!
+UA_NodeId certificateGroupId;
+UA_NodeId certificateTypeId;
+
+/* Shorthand for standard-defined NodeIds in Namespace 0.
+* See the generated nodeids.h for the full list. */
+#define UA_NS0EXID(ID) UA_EXPANDEDNODEID_NUMERIC(0, UA_NS0ID_##ID)
+/* Print the ExpandedNodeId in the humand-readable format defined in Part 6,
+* 5.3.1.11:
+*
+* svr=<serverindex>;ns=<namespaceindex>;<type>=<value>
+* or
+* svr=<serverindex>;nsu=<uri>;<type>=<value>
+*
+* The definitions for svr, ns and nsu is omitted if zero / the empty string.
+*
+* The method can either use a pre-allocated string buffer or allocates memory
+* internally if called with an empty output string. */
+
+
+
+
+        UA_LOG_WARNING(logger, UA_LOGCATEGORY_SECURITYPOLICY,
+                       "The certificate's Subject Alternative Name URI (%S) "
+                       "does not match the ApplicationURI (%S)",
+                       subjectURI, *applicationURI);
+
+## NODID
+getCertificateGroup(UA_Server *server, const UA_NodeId certificateGroupId) {
+    UA_NodeId defaultApplicationGroup =
+        UA_NODEID_NUMERIC(0, UA_NS0ID_SERVERCONFIGURATION_CERTIFICATEGROUPS_DEFAULTAPPLICATIONGROUP);
+    UA_NodeId defaultUserTokenGroup =
+        UA_NODEID_NUMERIC(0, UA_NS0ID_SERVERCONFIGURATION_CERTIFICATEGROUPS_DEFAULTUSERTOKENGROUP);
+    if(UA_NodeId_equal(&certificateGroupId, &defaultApplicationGroup)) {
+  
+#define UA_NS0ID_SERVERCONFIGURATION_CERTIFICATEGROUPS_DEFAULTAPPLICATIONGROUP 14156 /* Object 
+#define UA_NS0ID_SERVERCONFIGURATION_CERTIFICATEGROUPS_DEFAULTUSERTOKENGROUP   14122*/  
+### SAN:
+X509v3 Subject Alternative Name: 
+- DNS:pege
+- DNS:pege
+- IP Address:10.0.2.15
+- IP Address:172.17.0.1
+- URI:urn:open62541.unconfigured.application
+
+
+
+## XXX
+* Split the given endpoint url into hostname, vid and pcp. All arguments must
+ * be non-NULL. EndpointUrls have the form "opc.eth://<host>[:<VID>[.PCP]]".
+ * The host is a MAC address, an IP address or a registered name like a
+ * hostname. The format of a MAC address is six groups of hexadecimal digits,
+ * separated by hyphens (e.g. 01-23-45-67-89-ab). A system may also accept
+ * hostnames and/or IP addresses if it provides means to resolve it to a MAC
+ * address (e.g. DNS and Reverse-ARP).
+ *
+ * Note: currently only parsing MAC address is supported.
+
+
+Enepoint:url:
+"opc.udp://" =>networkaddressurl
+"opc.tcp://localhost:4840"
+"opc.wss://localhost:443"
+"opc.eth"
+networkAddressUrl.url = UA_STRING(argv[1]);
+opc.eth:// (transportprofile)
+
+## Ohter
+
+/* Different sets of certificates are trusted for SecureChannel / Session */
+UA_CertificateGroup secureChannelPKI;
+UA_CertificateGroup sessionPKI;
+
+
+
+# Implementaiton
+I'm using mbedtls, and have not set "mbedtls_x509_subject_alternative_name"
+
+
+# WArnings
+[2026-01-08 15:36:07.955 (UTC+0100)] warn/application	ServerUrls already set. Overriding.
+[2026-01-08 15:36:07.955 (UTC+0100)] warn/server	AccessControl: Unconfigured AccessControl. Users have all permissions.
+[2026-01-08 15:36:07.955 (UTC+0100)] warn/security	The certificate's application URI could not be verified. StatusCode BadCertificateUriInvalid
+[2026-01-08 15:36:07.955 (UTC+0100)] warn/security	The certificate's application URI could not be verified. StatusCode BadCertificateUriInvalid
+[2026-01-08 15:36:07.955 (UTC+0100)] warn/security	The certificate's application URI could not be verified. StatusCode BadCertificateUriInvalid
 

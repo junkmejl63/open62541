@@ -1,0 +1,51 @@
+        "openssl", "x509",
+        "-req", "-in", "localhost.csr",  # The CSR we just created
+        "-out", "localhost.crt",  # Output signed certificate
+        "-extfile", "./ext.cnf",
+        "-CA", signing_cert,  # Root or Intermediate CA certificate
+        "-subj", "/C=DE/L=Here/O=open62541/CN=open62541Server@localhost",  # Subject info
+        "-CAkey", signing_key,  # Root or Intermediate CA private key
+        "-CAcreateserial",  # Creates a serial number file for the certificate
+        "-config", "localhost.cnf",
+        "-days", "365"  # Valid for 365 days
+    ], check=True)
+    #"-sha256",  # Hashing algorithm to use
+    #    "-config", openssl_conf,  # Configuration file
+    #], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    #print("stdout:", result.stdout.decode())
+    #print("stderr:", result.stderr.decode())
+    
+    #   "-extension", "usr_cert", # User usr_csr
+
+
+
+
+intermediate:
+
+
+[ req ]
+default_bits      = 2048
+default_keyfile   = privkey.pem
+default_md        = sha256
+prompt            = no
+distinguished_name = req_distinguished_name
+#attributes        = req_attributes
+x509_extensions   = v3_intermediate_ca
+
+
+[ req_distinguished_name ]
+C  = US
+ST = California
+L  = San Francisco
+O  = Example CA
+OU = Intermediate CA
+CN = Example Intermediate Certificate Authority
+
+[ v3_intermediate_ca ]
+# Intermediate CA v3 Extensions
+basicConstraints = critical,CA:true,pathlen:0  # CA: true and restrict path length to 0 (intermediate only)
+keyUsage = critical,keyCertSign,cRLSign  # Allows signing other certificates and CRLs
+extendedKeyUsage = serverAuth,clientAuth  # Allows for server and client authentication (can be adjusted based on your needs)
+subjectKeyIdentifier = hash  # Subject Key Identifier (SKI) for the intermediate CA
+authorityKeyIdentifier = keyid,issuer  # Authority Key Identifier (AKI)

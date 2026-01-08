@@ -481,9 +481,10 @@ static UA_StatusCode
 mbedtlsVerifyChain(UA_CertificateGroup *cg, MemoryCertStore *ctx, mbedtls_x509_crt *stack,
                    mbedtls_x509_crt **old_issuers, mbedtls_x509_crt *cert, int depth) {
     /* Maxiumum chain length */
-    if(depth == UA_MBEDTLS_MAX_CHAIN_LENGTH)
+    if(depth == UA_MBEDTLS_MAX_CHAIN_LENGTH) {
+         UA_LOG_WARNING(sp->logger, UA_LOGCATEGORY_SECURITYPOLICY,"PEGE: File: %s, Line: %d\n", __FILE__, __LINE__);
         return UA_STATUSCODE_BADCERTIFICATECHAININCOMPLETE;
-
+    }
     /* Verification Step: Validity Period */
     if(mbedtls_x509_time_is_future(&cert->valid_from) ||
        mbedtls_x509_time_is_past(&cert->valid_to))
@@ -541,8 +542,11 @@ mbedtlsVerifyChain(UA_CertificateGroup *cg, MemoryCertStore *ctx, mbedtls_x509_c
 
         /* Detect (endless) loops of issuers */
         for(int i = 0; i < depth; i++) {
-            if(old_issuers[i] == issuer)
+            if(old_issuers[i] == issuer) {
+                
+                 UA_LOG_WARNING(sp->logger, UA_LOGCATEGORY_SECURITYPOLICY,"PEGE: File: %s, Line: %d\n", __FILE__, __LINE__);
                 return UA_STATUSCODE_BADCERTIFICATECHAININCOMPLETE;
+            }
         }
         old_issuers[depth] = issuer;
 

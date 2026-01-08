@@ -6,10 +6,9 @@
  *    Copyright 2024 (c) Fraunhofer IOSB (Author: Noel Graf)
  *    Copyright 2024 (c) Siemens AG (Authors: Tin Raic, Thomas Zeschg)
  */
-
 #include <open62541/util.h>
 #include <open62541/plugin/certificategroup_default.h>
-
+#include <open62541/plugin/log_stdout.h>
 #if defined(UA_ENABLE_ENCRYPTION_OPENSSL) || defined(UA_ENABLE_ENCRYPTION_LIBRESSL)
 #include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
@@ -537,9 +536,12 @@ static UA_StatusCode
 openSSL_verifyChain(UA_CertificateGroup *cg, MemoryCertStore *ctx, STACK_OF(X509) *stack,
                     X509 **old_issuers, X509 *cert, int depth) {
     /* Maxiumum chain length */
-    if(depth == UA_OPENSSL_MAX_CHAIN_LENGTH)
-        return UA_STATUSCODE_BADCERTIFICATECHAININCOMPLETE;
+    if(depth == UA_OPENSSL_MAX_CHAIN_LENGTH) {
+        UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_SECURITYPOLICY,"PEGE: File: %s, Line: %d\n", __FILE__, __LINE__);
 
+
+        return UA_STATUSCODE_BADCERTIFICATECHAININCOMPLETE;
+    }
     /* Verification Step: Validity Period */
     ASN1_TIME *notBefore = X509_get_notBefore(cert);
     ASN1_TIME *notAfter = X509_get_notAfter(cert);
@@ -601,8 +603,10 @@ openSSL_verifyChain(UA_CertificateGroup *cg, MemoryCertStore *ctx, STACK_OF(X509
         /* Detect (endless) loops of issuers. The last one can be skipped by the
          * check for self-signed just before. */
         for(int i = 0; i < depth; i++) {
-            if(old_issuers[i] == issuer)
+            if(old_issuers[i] == issuer) {
+                 UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_SECURITYPOLICY,"PEGE: File: %s, Line: %d\n", __FILE__, __LINE__);
                 return UA_STATUSCODE_BADCERTIFICATECHAININCOMPLETE;
+            }
         }
         old_issuers[depth] = issuer;
 
